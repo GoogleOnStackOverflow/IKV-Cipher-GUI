@@ -4,6 +4,8 @@ import Spinner from 'react-spinkit';
 import {Well, Jumbotron, ButtonGroup, DropdownButton, Button, ButtonToolbar, MenuItem, Modal, FormControl, HelpBlock, FormGroup, ControlLabel} from 'react-bootstrap';
 import PathSep from './PathSep';
 
+import { HOST_NAME, SERVER_PORT } from '../constants';
+
 const concatPath = (array) => {
   var path = '/';
   for(var i=1; i<array.length; i++){
@@ -89,7 +91,7 @@ class Path extends Component {
           <ButtonToolbar>
           <ButtonGroup className="pull-right">
             <Request
-              url={`http://localhost:13428/valid/${concatPath(this.state.paths)}`}
+              url={`http://${HOST_NAME}:${SERVER_PORT}/valid/${concatPath(this.state.paths)}`}
               method='get'
               accept='application/json'
               verbose={true}
@@ -182,7 +184,7 @@ class Create extends Component {
             </form>
           ):(
             <Request
-              url={"http://localhost:13428/path/"+this.props.path+this.state.folder_name}
+              url={`http://${HOST_NAME}:${SERVER_PORT}/path/${this.props.path}${this.state.folder_name}`}
               method='post'
               accept='application/json'
               verbose={true}
@@ -253,7 +255,7 @@ class Mounting extends Component {
             </div>
           ):(
             <Request
-              url={"http://localhost:13428/mount/"+this.props.path}
+              url={`http://${HOST_NAME}:${SERVER_PORT}/mount/${this.props.path}`}
               method='post'
               accept='application/json'
               verbose={true}

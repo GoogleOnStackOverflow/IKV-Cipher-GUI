@@ -2,12 +2,13 @@ import React, { Component , PropTypes } from 'react';
 import Request from 'react-http-request';
 import Spinner from 'react-spinkit';
 import { DropdownButton, MenuItem, Button } from 'react-bootstrap';
+import { HOST_NAME, SERVER_PORT } from '../constants';
 
 const PathSep = (props) =>{
 
   return (
   <Request
-    url={"http://localhost:13428/path/"+props.path}
+    url={`http://${HOST_NAME}:${SERVER_PORT}/path/${props.path}`}
     method='get'
     accept='application/json'
     verbose={true}
