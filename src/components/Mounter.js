@@ -1,17 +1,25 @@
+// Import components from 3rd party modules
 import React, { Component } from 'react';
 import request from 'superagent';
 import { Button } from 'react-bootstrap';
+import io from 'socket.io-client';
+
+// Import components
 import { CreateModel , MountModel } from './CheckModel';
 import PathForm from './PathForm';
 import PathBtnGroup from './PathBtnGroup';
 import MountList from './MountList';
-import io from 'socket.io-client';
+
+// Import global constants
 import { HOST_NAME , SERVER_PORT } from '../constants';
 
+// Create socket io client
 let socket = io(`http://${HOST_NAME}:${SERVER_PORT}`);
 
+// Core part of the mounting
 class Mounter extends Component {
 
+  // Init states
   constructor() {
   	super();
     this.state = {
@@ -25,15 +33,22 @@ class Mounter extends Component {
       	mounted_list:[]
     };
 
+    // Get the init data from server
     this.handleClear();
   }
 
   componentDidMount() {
+    // Called when connection established
     socket.on('init', this._initialize.bind(this));
+
+    // Called when server created a new folder
     socket.on('create', this._handleCreated.bind(this));
+
+    // Called when server mounted a path
     socket.on('mount', this._handleMounted.bind(this));
   }
 
+  // Socket.io emit event listeners
   _initialize(data) {
     var {mounted_list} = data;
     this.setState({mounted_list});
@@ -49,13 +64,20 @@ class Mounter extends Component {
   	this.setState({mounted_list: server_mounted_list});
   }
 
+  // Called when the text in the form for path changed
   handleNowBrChange(str) {
+    // Change the UI text and store the text in the status
     this.setState({now_browsing: str});
+
+    // slice the path and the filter 
     var to_browse = str.slice(0,str.lastIndexOf('/')+1);
     var filter_w = str.slice(str.lastIndexOf('/')+1, str.length);
 
+    // Renew and check if the path is mountable
     this.handleMountable(to_browse);
 
+    // Send request to the server to check if the path valid, 
+    // if the filter name can be created as a new folder, and dir list under the path
     request
       .get(`http://${HOST_NAME}:${SERVER_PORT}/path/${to_browse}`)
       .set('Accept', 'application/json')
@@ -91,26 +113,7 @@ class Mounter extends Component {
       }.bind(this));
   }
 
-  handleNowList(_path) {
-    return request
-      .get(`http://${HOST_NAME}:${SERVER_PORT}/path/${_path}`)
-      .set('Accept', 'application/json')
-      .end(function(err, res){
-        if(res){
-          var list = JSON.parse(res.text);
-          return this.setState({
-            now_list: list,
-            valid: true
-          });
-        }else{
-          return this.setState({
-            now_list:[],
-            valid: false
-          });
-        }
-      }.bind(this));
-  }
-
+  // Check if the path mountable
   handleMountable(_path){
     return request
       .get(`http://${HOST_NAME}:${SERVER_PORT}/valid/${_path}`)
@@ -124,15 +127,20 @@ class Mounter extends Component {
       }.bind(this));
   }
 
+  // handle function for the form UI
   hadleFormOnChange(e){
     var str = e.target.value;
     this.handleNowBrChange(str);
   }
 
+  // handle function for the clear button
+  // which reset the text in the form
   handleClear() {
     this.handleNowBrChange('/');
   }
 
+  // handle function for the sub-directories list buttons
+  // when click on the button, change the browsing target to the clicked folder
   handleButtonOnClick(_path){
     var {now_browsing} = this.state;
     var now_path = (now_browsing[now_browsing.length-1] === '/')?now_browsing:now_browsing.slice(0,now_browsing.lastIndexOf('/')+1)
@@ -140,27 +148,33 @@ class Mounter extends Component {
     this.handleNowBrChange(now_path);
   }
 
+  // handle function for 'create folder' button, which open the creating model
   createOnShow(){
     this.setState({show_create:true});
   }
 
+  // handle function for closing the create model
   createOnHide(){
     this.setState({show_create:false});
   }
 
+  // ask server to create folder by the path written by the user in the form
   handleOnCreate(){
     socket.emit('create',{path: this.state.now_browsing});
     this.setState({show_create:false});
   }
 
+  // handle function for 'mount here' button, which open the creating model
   mountOnShow(){
     this.setState({show_mount:true});
   }
 
+  // handle function for closing the mounting model
   mountOnHide(){
     this.setState({show_mount:false});
   }
 
+  // Send event to server to mount at the path
   handleOnMount(){
     socket.emit(
       'mount',
@@ -169,6 +183,7 @@ class Mounter extends Component {
     this.setState({show_mount:false});
   }
 
+  // Mount / Unmount a mounted path
   handleChangeMount(data,mounted){
     console.log(`path: ${data} Mounted: ${mounted}`);
     if(mounted){
