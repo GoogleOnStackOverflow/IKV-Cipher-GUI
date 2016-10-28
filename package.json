@@ -17,7 +17,9 @@
     "react-routes": "^0.2.6",
     "react-routing": "0.0.7",
     "react-scripts": "^0.6.1",
-    "react-spinkit": "^1.1.11"
+    "react-spinkit": "^1.1.11",
+    "socket.io": "^1.5.1",
+    "superagent": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

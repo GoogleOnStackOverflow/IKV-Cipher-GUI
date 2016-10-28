@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CreateModel , MountModel } from './components/CheckModel';
+import PathForm from './components/PathForm';
+import PathBtnGroup from './components/PathBtnGroup';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <PathForm state='success' path='foooo' onChange={(e)=>{console.log(e.target.value);}} onClear={()=>{console.log('clear!');}} />
+        <PathBtnGroup paths={['a','b','c','aaaa']} onClick={(data)=>{console.log(data);}} />
       </div>
     );
   }

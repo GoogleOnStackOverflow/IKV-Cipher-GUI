@@ -1,28 +1,8 @@
 import React, { Component } from 'react';
 import {Router, Route, Link} from 'react-router';
-import {Navbar, Nav, NavItem, NavDropdown, DropdownButton, MenuItem, CollapsibleNav, Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock} from 'react-bootstrap';
+import {Navbar, Nav, NavItem, NavDropdown, MenuItem , Modal, Button } from 'react-bootstrap';
 
-
-import Path from './Path'
-
-class App extends Component {
-
-
-
-  render() {
-    return (
-      <Router>
-        <Route path="/" component={Header}>
-          <Route path="path" component={Path}/>
-          <Route path="installation" component={Documents}/>
-          <Route path="usage" component={Documents}/>
-          <Route path="howitworks" component={Documents}/>
-          <Route path="contact" component={Contact}/>
-        </Route>
-      </Router>
-    );
-  }
-}
+import Mounter from './Mounter'
 
 class Header extends Component {
   constructor () {
@@ -123,6 +103,23 @@ class Contact extends Component {
           <Button onClick={this.props.onHide}>Close</Button>
         </Modal.Footer>
       </Modal>
+    );
+  }
+}
+
+class App extends Component {
+
+  render() {
+    return (
+      <Router>
+        <Route path="/" component={Header}>
+          <Route path="/(path)" component={Mounter}/>
+          <Route path="installation" component={Documents}/>
+          <Route path="usage" component={Documents}/>
+          <Route path="howitworks" component={Documents}/>
+          <Route path="contact" component={Contact}/>
+        </Route>
+      </Router>
     );
   }
 }
